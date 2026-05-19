@@ -461,6 +461,7 @@ nav {
 // ══════════════════════════════════════════
 const CODICE_DOCENTE = '2030'; // ← CAMBIA QUI il tuo codice segreto
 const STORAGE_KEY = 'sa_valutazioni_v2';
+const GROQ_KEY = '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';
 
 const PROGRAMMA = `
 CONTESTO: Questa è una verifica di EDUCAZIONE CIVICA. L'obiettivo è valutare la capacità dello studente di collegare i contenuti di Scienze degli Alimenti agli Obiettivi di Sviluppo Sostenibile dell'Agenda 2030 dell'ONU.
@@ -623,18 +624,21 @@ function setTyping(vis) {
 
 async function chiamaAPI() {
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const messaggi = [{ role: 'system', content: SYSTEM_PROMPT }, ...stato.conversazione];
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + GROQ_KEY
+      },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'llama-3.3-70b-versatile',
         max_tokens: 1000,
-        system: SYSTEM_PROMPT,
-        messages: stato.conversazione
+        messages: messaggi
       })
     });
     const data = await res.json();
-    const testo = (data.content || []).map(b => b.text || '').join('');
+    const testo = data.choices?.[0]?.message?.content || '';
     setTyping(false);
     stato.conversazione.push({ role: 'assistant', content: testo });
     aggiungiBolla('bot', testo);
@@ -708,17 +712,20 @@ Genera una valutazione FINALE. Rispondi SOLO con un oggetto JSON (senza markdown
 }`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + GROQ_KEY
+      },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'llama-3.3-70b-versatile',
         max_tokens: 1000,
         messages: [{ role: 'user', content: prompt }]
       })
     });
     const data = await res.json();
-    const raw = (data.content || []).map(b => b.text || '').join('');
+    const raw = data.choices?.[0]?.message?.content || '';
     const clean = raw.replace(/```json|```/g, '').trim();
     const val = JSON.parse(clean);
     renderRisultato(val);
