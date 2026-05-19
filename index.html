@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Verifica Ed. Civica – Agenda 2030 & Scienze degli Alimenti</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --green-900: #173404;
+  --green-800: #27500A;
+  --green-700: #3B6D11;
+  --green-600: #3B6D11;
+  --green-500: #639922;
+  --green-200: #C0DD97;
+  --green-100: #EAF3DE;
+  --green-50:  #f4f9ed;
+  --teal-700:  #085041;
+  --teal-500:  #0F6E56;
+  --teal-100:  #E1F5EE;
+  --amber-600: #BA7517;
+  --amber-100: #FAEEDA;
+  --red-600:   #A32D2D;
+  --red-100:   #FCEBEB;
+  --gray-700:  #444441;
+  --gray-500:  #5F5E5A;
+  --gray-200:  #D3D1C7;
+  --gray-100:  #F1EFE8;
+  --white:     #ffffff;
+  --bg:        #f5f7f0;
+  --text:      #2C2C2A;
+  --text-soft: #5F5E5A;
+  --radius:    14px;
+  --shadow:    0 4px 24px rgba(59,109,17,0.10);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ═══════════════ SCREENS ═══════════════ */
+.screen { display: none; min-height: 100vh; flex-direction: column; }
+.screen.active { display: flex; }
+
+/* ═══════════════ NAV ═══════════════ */
+nav {
+  background: var(--white);
+  border-bottom: 1.5px solid var(--green-200);
+  padding: 0.75rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: sticky; top: 0; z-index: 50;
+}
+.nav-leaf { font-size: 1.4rem; }
+.nav-title { font-family: 'DM Serif Display', serif; font-size: 1rem; color: var(--green-700); line-height: 1.2; }
+.nav-sub { font-size: 0.7rem; color: var(--text-soft); }
+.nav-right { margin-left: auto; display: flex; gap: 8px; }
+
+/* ═══════════════ SETUP ═══════════════ */
+#screen-setup {
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+}
+.setup-card {
+  background: var(--white);
+  border-radius: 20px;
+  border: 1.5px solid var(--green-200);
+  padding: 2rem 1.5rem;
+  width: 100%; max-width: 420px;
+  box-shadow: var(--shadow);
+}
+.setup-card h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem; color: var(--green-700);
+  margin-bottom: 0.25rem;
+}
+.setup-card .tagline {
+  font-size: 0.82rem; color: var(--text-soft);
+  font-style: italic; margin-bottom: 1.5rem;
+}
+.field { margin-bottom: 1rem; }
+.field label { display: block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-soft); margin-bottom: 5px; }
+.field input {
+  width: 100%; padding: 0.6rem 0.85rem;
+  border: 1.5px solid var(--gray-200); border-radius: 10px;
+  font-size: 0.95rem; font-family: 'DM Sans', sans-serif;
+  background: var(--white); color: var(--text);
+  outline: none; transition: border-color 0.2s;
+  -webkit-appearance: none;
+}
+.field input:focus { border-color: var(--green-500); }
+.btn-primary {
+  width: 100%; padding: 0.8rem;
+  background: var(--green-700); color: var(--white);
+  border: none; border-radius: 12px;
+  font-size: 1rem; font-family: 'DM Sans', sans-serif; font-weight: 600;
+  cursor: pointer; margin-top: 0.5rem;
+  transition: background 0.2s, transform 0.1s;
+  letter-spacing: 0.01em;
+}
+.btn-primary:active { transform: scale(0.98); background: var(--teal-500); }
+.or-divider { text-align: center; margin: 1.2rem 0; color: var(--gray-500); font-size: 0.8rem; }
+.btn-secondary {
+  width: 100%; padding: 0.7rem;
+  background: var(--white); color: var(--green-700);
+  border: 1.5px solid var(--green-200); border-radius: 12px;
+  font-size: 0.9rem; font-family: 'DM Sans', sans-serif; font-weight: 500;
+  cursor: pointer; transition: background 0.2s;
+}
+.btn-secondary:active { background: var(--green-100); }
+
+/* ═══════════════ CHAT ═══════════════ */
+#screen-chat { flex-direction: column; }
+.chat-info-bar {
+  background: var(--green-100);
+  border-bottom: 1px solid var(--green-200);
+  padding: 0.5rem 1rem;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 4px;
+  font-size: 0.78rem; color: var(--green-700); font-weight: 500;
+}
+.chat-info-bar span { font-weight: 300; color: var(--text-soft); }
+.end-btn {
+  background: var(--amber-100); color: var(--amber-600);
+  border: 1px solid #FAC775; border-radius: 20px;
+  padding: 3px 12px; font-size: 0.72rem; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.messages {
+  flex: 1; overflow-y: auto;
+  padding: 1rem;
+  display: flex; flex-direction: column; gap: 0.6rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.msg-row { display: flex; }
+.msg-row.bot { justify-content: flex-start; }
+.msg-row.user { justify-content: flex-end; }
+
+.bubble {
+  max-width: 82%;
+  padding: 0.65rem 0.95rem;
+  border-radius: 18px;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.bubble.bot {
+  background: var(--white);
+  border: 1.5px solid var(--green-200);
+  border-bottom-left-radius: 5px;
+  color: var(--text);
+}
+.bubble.user {
+  background: var(--green-700);
+  color: var(--white);
+  border-bottom-right-radius: 5px;
+}
+.bubble.system {
+  background: var(--amber-100);
+  border: 1px solid #FAC775;
+  border-radius: 10px;
+  color: var(--amber-600);
+  font-size: 0.8rem;
+  font-style: italic;
+  max-width: 95%;
+  text-align: center;
+  align-self: center;
+}
+.sender-label {
+  font-size: 0.68rem; font-weight: 600; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--text-soft);
+  margin-bottom: 3px; padding-left: 2px;
+}
+
+.typing { display: flex; gap: 5px; align-items: center; padding: 0.65rem 0.95rem; background: var(--white); border: 1.5px solid var(--green-200); border-radius: 18px; border-bottom-left-radius: 5px; width: fit-content; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-500); animation: bounce 1.2s infinite; }
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-7px)} }
+
+.input-area {
+  background: var(--white);
+  border-top: 1.5px solid var(--green-200);
+  padding: 0.6rem 0.8rem;
+  display: flex; gap: 8px; align-items: flex-end;
+  position: sticky; bottom: 0;
+}
+.input-area textarea {
+  flex: 1; border: 1.5px solid var(--gray-200); border-radius: 12px;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.92rem; font-family: 'DM Sans', sans-serif;
+  resize: none; background: var(--white); color: var(--text);
+  outline: none; line-height: 1.5;
+  min-height: 42px; max-height: 120px;
+  transition: border-color 0.2s;
+}
+.input-area textarea:focus { border-color: var(--green-500); }
+.send-btn {
+  background: var(--green-700); color: var(--white);
+  border: none; border-radius: 12px;
+  width: 42px; height: 42px;
+  font-size: 1.1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: background 0.2s;
+}
+.send-btn:disabled { background: var(--gray-200); cursor: not-allowed; }
+.send-btn:not(:disabled):active { background: var(--teal-500); transform: scale(0.95); }
+
+/* ═══════════════ MODAL CODICE ═══════════════ */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 200; align-items: center; justify-content: center;
+  padding: 1rem;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--white); border-radius: 18px;
+  padding: 2rem 1.5rem; width: 100%; max-width: 340px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+  text-align: center;
+}
+.modal h3 { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--green-700); margin-bottom: 0.4rem; }
+.modal p { font-size: 0.85rem; color: var(--text-soft); margin-bottom: 1rem; }
+.modal input {
+  width: 100%; text-align: center; letter-spacing: 0.2em;
+  font-size: 1.5rem; font-weight: 700; font-family: 'DM Serif Display', serif;
+  padding: 0.6rem; border: 2px solid var(--gray-200); border-radius: 10px;
+  outline: none; color: var(--green-700); margin-bottom: 1rem;
+}
+.modal input:focus { border-color: var(--green-500); }
+.modal-btns { display: flex; gap: 8px; }
+.modal-btns button { flex: 1; padding: 0.65rem; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; }
+.modal-cancel { background: var(--gray-100); color: var(--gray-700); }
+.modal-confirm { background: var(--green-700); color: var(--white); }
+.modal-error { font-size: 0.8rem; color: var(--red-600); margin-bottom: 0.6rem; display: none; }
+
+/* ═══════════════ RISULTATO ═══════════════ */
+#screen-risultato { padding: 1rem; overflow-y: auto; }
+.ris-card {
+  background: var(--white); border-radius: 20px;
+  border: 1.5px solid var(--green-200);
+  padding: 1.5rem; margin: 0 auto;
+  max-width: 520px; box-shadow: var(--shadow);
+}
+.ris-header { text-align: center; padding-bottom: 1rem; border-bottom: 1px solid var(--green-100); margin-bottom: 1rem; }
+.ris-header h2 { font-family: 'DM Serif Display', serif; font-size: 1.35rem; color: var(--green-700); }
+.ris-meta { font-size: 0.8rem; color: var(--text-soft); margin-top: 3px; }
+.voto-big { text-align: center; padding: 1rem 0; }
+.voto-num { font-family: 'DM Serif Display', serif; font-size: 4.5rem; line-height: 1; }
+.voto-lbl { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-soft); margin-top: 2px; }
+.voto-desc { font-size: 0.95rem; font-style: italic; color: var(--text-soft); margin-top: 6px; }
+
+.criteri { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 1rem 0; }
+.crit-box { background: var(--gray-100); border-radius: 10px; padding: 0.7rem 0.5rem; text-align: center; }
+.crit-lbl { font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-soft); margin-bottom: 3px; }
+.crit-val { font-family: 'DM Serif Display', serif; font-size: 1.6rem; }
+.crit-max { font-size: 0.68rem; color: var(--text-soft); }
+.crit-note { font-size: 0.7rem; color: var(--text-soft); font-style: italic; margin-top: 3px; line-height: 1.3; }
+
+.feedback-strip {
+  background: var(--teal-100); border-left: 4px solid var(--teal-500);
+  border-radius: 0 10px 10px 0; padding: 0.9rem 1rem;
+  font-size: 0.87rem; line-height: 1.65; color: var(--teal-700);
+  margin: 0.8rem 0;
+}
+.feedback-strip .flbl { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; margin-bottom: 5px; opacity: 0.6; }
+
+.pf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0.8rem 0; }
+.pf-box { }
+.pf-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-bottom: 5px; }
+.pf-list { list-style: none; }
+.pf-list li { font-size: 0.8rem; padding: 2px 0; color: var(--text); line-height: 1.4; }
+.pf-list li::before { content: "›"; margin-right: 5px; font-weight: 700; }
+.forza .pf-title { color: var(--green-700); }
+.forza .pf-list li::before { color: var(--green-500); }
+.miglio .pf-title { color: var(--amber-600); }
+.miglio .pf-list li::before { color: var(--amber-600); }
+
+.ris-actions { display: flex; gap: 8px; justify-content: center; margin-top: 1.2rem; flex-wrap: wrap; }
+.btn-print { background: var(--green-700); color: var(--white); border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.88rem; font-family: 'DM Sans', sans-serif; font-weight: 600; cursor: pointer; }
+.btn-reset { background: var(--white); color: var(--green-700); border: 1.5px solid var(--green-200); border-radius: 10px; padding: 0.6rem 1.2rem; font-size: 0.88rem; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; }
+.loading-ris { text-align: center; padding: 2.5rem 1rem; }
+.loading-ris .spin { width: 40px; height: 40px; border: 3px solid var(--green-200); border-top-color: var(--green-700); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 12px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════ DASHBOARD ═══════════════ */
+#screen-dashboard { overflow-y: auto; }
+.dash-header { background: var(--white); border-bottom: 1.5px solid var(--green-200); padding: 1rem 1.2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.dash-header h2 { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: var(--green-700); }
+.dash-body { padding: 1rem; max-width: 800px; margin: 0 auto; }
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+.stat-card { background: var(--white); border-radius: 12px; border: 1px solid var(--green-200); padding: 0.9rem; text-align: center; }
+.stat-val { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--green-700); }
+.stat-lbl { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-soft); margin-top: 2px; }
+
+.table-wrap { background: var(--white); border-radius: 14px; border: 1px solid var(--green-200); overflow: hidden; }
+.dash-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.dash-table th { background: var(--green-100); color: var(--green-800); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.6rem 0.8rem; text-align: left; }
+.dash-table td { padding: 0.65rem 0.8rem; border-top: 1px solid var(--green-100); vertical-align: top; }
+.dash-table tr:hover td { background: var(--green-50); }
+.voto-chip { display: inline-block; padding: 2px 10px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; font-family: 'DM Serif Display', serif; }
+.detail-btn { font-size: 0.72rem; color: var(--green-700); cursor: pointer; text-decoration: underline; background: none; border: none; font-family: 'DM Sans', sans-serif; padding: 0; }
+.empty-state { text-align: center; padding: 2.5rem; color: var(--text-soft); font-style: italic; }
+
+.del-btn { font-size: 0.7rem; color: var(--red-600); cursor: pointer; background: none; border: none; font-family: 'DM Sans', sans-serif; padding: 0; margin-left: 6px; }
+
+/* detail modal */
+.detail-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 1rem; }
+.detail-modal.open { display: flex; }
+.detail-inner { background: var(--white); border-radius: 18px; padding: 1.5rem; max-width: 500px; width: 100%; margin: auto; }
+.detail-inner h3 { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: var(--green-700); margin-bottom: 0.3rem; }
+.close-detail { float: right; background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--gray-500); margin-top: -4px; }
+.transcript-box { background: var(--gray-100); border-radius: 10px; padding: 0.8rem; font-size: 0.78rem; line-height: 1.6; max-height: 280px; overflow-y: auto; margin-top: 0.8rem; white-space: pre-wrap; }
+
+@media print {
+  nav, .chat-info-bar, .input-area, .ris-actions, #screen-setup, #screen-chat, #screen-dashboard { display: none !important; }
+  #screen-risultato { display: block !important; padding: 0; }
+  .ris-card { box-shadow: none; border: 1px solid #ccc; }
+  body { background: white; }
+}
+
+@media (max-width: 400px) {
+  .criteri { grid-template-columns: 1fr 1fr; }
+  .pf-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ SETUP ══ -->
+<div id="screen-setup" class="screen active">
+  <nav>
+    <span class="nav-leaf">🌿</span>
+    <div>
+      <div class="nav-title">Scienze degli Alimenti</div>
+      <div class="nav-sub">1ª Istituto Alberghiero · Verifica orale</div>
+    </div>
+  </nav>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:1.5rem 1rem;">
+    <div class="setup-card">
+      <h2>Inizia il colloquio</h2>
+      <p class="tagline">Il professore virtuale ti farà domande sul programma svolto</p>
+      <div class="field"><label>Nome e cognome</label><input id="inp-nome" type="text" placeholder="Es. Giulia Ferretti" autocomplete="name"></div>
+      <div class="field"><label>Classe</label><input id="inp-classe" type="text" placeholder="Es. 1A"></div>
+      <div class="field"><label>Data</label><input id="inp-data" type="date"></div>
+      <button class="btn-primary" onclick="avviaChat()">Inizia il colloquio →</button>
+      <div class="or-divider">— oppure —</div>
+      <button class="btn-secondary" onclick="apriDashboard()">📊 Dashboard docente</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CHAT ══ -->
+<div id="screen-chat" class="screen">
+  <nav>
+    <span class="nav-leaf">🌿</span>
+    <div>
+      <div class="nav-title" id="chat-nav-nome">Colloquio</div>
+      <div class="nav-sub">Scienze degli Alimenti · 1ª Alberghiero</div>
+    </div>
+  </nav>
+  <div class="chat-info-bar">
+    <span id="chat-info-text">—</span>
+    <button class="end-btn" onclick="apriModaleCodice()">🔒 Termina (docente)</button>
+  </div>
+  <div class="messages" id="messages"></div>
+  <div id="typing-row" style="display:none;padding:0 1rem 0.4rem">
+    <div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  </div>
+  <div class="input-area">
+    <textarea id="user-input" rows="1" placeholder="Scrivi la tua risposta…" onkeydown="onKey(event)"></textarea>
+    <button class="send-btn" id="send-btn" onclick="invia()">➤</button>
+  </div>
+</div>
+
+<!-- ══ RISULTATO ══ -->
+<div id="screen-risultato" class="screen">
+  <nav>
+    <span class="nav-leaf">🌿</span>
+    <div>
+      <div class="nav-title">Valutazione finale</div>
+      <div class="nav-sub">Scienze degli Alimenti · 1ª Alberghiero</div>
+    </div>
+  </nav>
+  <div id="ris-content" style="padding:1rem;max-width:540px;margin:0 auto;">
+    <div class="ris-card">
+      <div class="loading-ris">
+        <div class="spin"></div>
+        <p style="font-size:0.88rem;color:var(--text-soft);">Elaborazione valutazione…</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DASHBOARD ══ -->
+<div id="screen-dashboard" class="screen">
+  <div class="dash-header">
+    <h2>📊 Dashboard docente</h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn-secondary" style="width:auto;padding:0.4rem 0.9rem;font-size:0.82rem;" onclick="esportaCSV()">↓ Esporta CSV</button>
+      <button class="btn-secondary" style="width:auto;padding:0.4rem 0.9rem;font-size:0.82rem;" onclick="showScreen('setup')">← Esci</button>
+    </div>
+  </div>
+  <div class="dash-body" id="dash-body"></div>
+</div>
+
+<!-- ══ MODAL CODICE DOCENTE ══ -->
+<div class="modal-overlay" id="modal-codice">
+  <div class="modal">
+    <h3>🔒 Codice docente</h3>
+    <p>Inserisci il codice per terminare il colloquio e generare la valutazione</p>
+    <p class="modal-error" id="modal-error">Codice non corretto</p>
+    <input type="password" id="codice-input" placeholder="••••" maxlength="10" onkeydown="if(event.key==='Enter')confermaCodice()">
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="chiudiModale()">Annulla</button>
+      <button class="modal-confirm" onclick="confermaCodice()">Conferma</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL DASHBOARD LOGIN ══ -->
+<div class="modal-overlay" id="modal-dash">
+  <div class="modal">
+    <h3>📊 Accesso docente</h3>
+    <p>Inserisci il codice docente per accedere alla dashboard</p>
+    <p class="modal-error" id="dash-error">Codice non corretto</p>
+    <input type="password" id="dash-codice-input" placeholder="••••" maxlength="10" onkeydown="if(event.key==='Enter')confermaDash()">
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="chiudiModaleDash()">Annulla</button>
+      <button class="modal-confirm" onclick="confermaDash()">Accedi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL DETTAGLIO STUDENTE ══ -->
+<div class="detail-modal" id="modal-detail">
+  <div class="detail-inner">
+    <button class="close-detail" onclick="chiudiDetail()">✕</button>
+    <div id="detail-content"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════
+const CODICE_DOCENTE = '2030'; // ← CAMBIA QUI il tuo codice segreto
+const STORAGE_KEY = 'sa_valutazioni_v2';
+
+const PROGRAMMA = `
+CONTESTO: Questa è una verifica di EDUCAZIONE CIVICA. L'obiettivo è valutare la capacità dello studente di collegare i contenuti di Scienze degli Alimenti agli Obiettivi di Sviluppo Sostenibile dell'Agenda 2030 dell'ONU.
+
+OBIETTIVI DI AGENDA 2030 STUDIATI E I LORO COLLEGAMENTI CON LA DISCIPLINA:
+- SDG 2 (Fame Zero): sistemi alimentari sostenibili, biodiversità, accesso al cibo per tutti → collegato a classificazione alimenti, filiera, etichetta
+- SDG 3 (Salute e Benessere): corretta alimentazione, prevenzione malattie, sicurezza alimentare → collegato a nutrienti, DCA, malattie a trasmissione alimentare, igiene
+- SDG 12 (Consumo e Produzione Responsabili): spreco alimentare, scelte consapevoli, etichettatura, rifiuti → collegato a etichetta, allergeni, 4R, MOCA
+- SDG 13 (Lotta ai cambiamenti climatici): impatto ambientale dei consumi alimentari, produzione sostenibile → collegato a fotosintesi, filiera, conservazione
+- SDG 15 (Vita sulla terra): impatto dell'agricoltura sugli ecosistemi, autotrofi/eterotrofi → collegato a fotosintesi, glucidi
+
+PROGRAMMA SVOLTO – SCIENZE DEGLI ALIMENTI – CLASSE PRIMA ISTITUTO ALBERGHIERO
+
+MODULO 1: GLI ALIMENTI ED I NUTRIENTI
+- Definizione di alimento; classificazione degli alimenti; i 5 gruppi alimentari
+- Le funzioni degli alimenti e dei nutrienti; definizione di alimentazione e nutrizione
+- I disturbi del comportamento alimentare (DCA)
+- La fotosintesi clorofilliana e gli organismi autotrofi ed eterotrofi
+- I glucidi: classificazione, fonti alimentari, funzioni
+
+MODULO 2: I PRODOTTI AGROALIMENTARI E LA FILIERA
+- L'etichetta alimentare: caratteristiche, elementi obbligatori e facoltativi
+- Gli allergeni; definizione di MOCA
+- Gli obiettivi di Agenda 2030 e collegamenti con le informazioni riportate in etichetta
+- Separazione corretta dei rifiuti: imballaggi riciclabili, raccolta differenziata, le 4R (Ridurre, Riutilizzare, Riciclare, Recuperare)
+
+MODULO 3: SICUREZZA ALIMENTARE
+- La contaminazione fisica, chimica e biologica degli alimenti
+- Incidenti nucleari di Chernobyl e Fukushima e impatto sulla sicurezza alimentare
+- Struttura e riproduzione di virus e batteri; spore e tossine
+- Malattie a trasmissione alimentare: infezione, tossinfezione, intossicazione, parassitosi
+- Epatite A, Botulino, Anisakis, Salmonella
+- I fattori che influenzano la crescita microbica
+- I 5 punti chiave della sicurezza alimentare OMS
+- Igiene professionale; HACCP; conservazione in frigo
+`;
+
+const SYSTEM_PROMPT = `Sei un professore di Educazione Civica che conduce una verifica orale con studenti di prima superiore dell'istituto alberghiero italiano.
+
+${PROGRAMMA}
+
+OBIETTIVO DELLA VERIFICA:
+Valutare la capacità dello studente di collegare i contenuti di Scienze degli Alimenti agli obiettivi dell'Agenda 2030. Non è una verifica di nozionismo puro: vuoi capire se lo studente sa PERCHÉ quello che ha studiato è importante per il mondo e per la società.
+
+COME CONDURRE IL COLLOQUIO:
+- Parti sempre dall'Agenda 2030: chiedi allo studente di spiegare un SDG e poi di collegarlo a qualcosa di concreto studiato in scienze degli alimenti
+- Alterna domande sui diversi SDG (2, 3, 12, 13) e sui diversi moduli del programma
+- Chiedi esempi pratici e concreti: "Cosa puoi fare tu nella vita quotidiana per contribuire all'SDG 12?"
+- Approfondisci i collegamenti: se lo studente cita l'etichetta, chiedi quale SDG tutela e perché
+- Usa un linguaggio adatto a ragazzi di 14-15 anni, semplice e diretto
+- Fai UNA domanda alla volta, aspetta la risposta, poi commenta brevemente e prosegui
+- Sii incoraggiante: valorizza i collegamenti che lo studente riesce a fare, anche parziali
+- Se lo studente è in difficoltà, dai un piccolo indizio senza dare la risposta
+- Il colloquio non ha un numero fisso di domande: continua finché il docente non lo termina
+- NON inserire punteggi numerici durante il colloquio
+- Parla sempre in italiano
+
+Inizia accogliendo lo studente con calore e ponendo subito una domanda introduttiva sull'Agenda 2030.`;
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let stato = {
+  nome: '', classe: '', data: '',
+  conversazione: [],
+  terminato: false
+};
+
+// ══════════════════════════════════════════
+// SCREENS
+// ══════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+// ══════════════════════════════════════════
+// SETUP → CHAT
+// ══════════════════════════════════════════
+function avviaChat() {
+  const nome = document.getElementById('inp-nome').value.trim();
+  const classe = document.getElementById('inp-classe').value.trim();
+  const dataVal = document.getElementById('inp-data').value;
+  if (!nome || !classe) { alert('Inserisci nome e classe per continuare.'); return; }
+
+  stato.nome = nome;
+  stato.classe = classe;
+  stato.data = dataVal ? new Date(dataVal).toLocaleDateString('it-IT') : new Date().toLocaleDateString('it-IT');
+  stato.conversazione = [];
+  stato.terminato = false;
+
+  document.getElementById('chat-nav-nome').textContent = nome;
+  document.getElementById('chat-info-text').innerHTML = `<strong>${nome}</strong> · ${stato.classe} · ${stato.data}`;
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('user-input').disabled = false;
+  document.getElementById('send-btn').disabled = false;
+  document.getElementById('user-input').value = '';
+
+  showScreen('chat');
+
+  stato.conversazione.push({ role: 'user', content: `Lo studente si chiama ${nome}, frequenta la classe ${stato.classe}. Inizia il colloquio.` });
+  setTyping(true);
+  chiamaAPI();
+}
+
+// ══════════════════════════════════════════
+// CHAT LOGIC
+// ══════════════════════════════════════════
+function onKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); invia(); }
+}
+
+function invia() {
+  if (stato.terminato) return;
+  const ta = document.getElementById('user-input');
+  const testo = ta.value.trim();
+  if (!testo) return;
+
+  aggiungiBolla('user', testo);
+  stato.conversazione.push({ role: 'user', content: testo });
+  ta.value = ''; ta.style.height = 'auto';
+  document.getElementById('send-btn').disabled = true;
+  setTyping(true);
+  chiamaAPI();
+}
+
+function aggiungiBolla(ruolo, testo) {
+  const msgs = document.getElementById('messages');
+  const row = document.createElement('div');
+  row.className = 'msg-row ' + (ruolo === 'user' ? 'user' : ruolo === 'system' ? '' : 'bot');
+
+  if (ruolo === 'bot') {
+    const wrap = document.createElement('div');
+    const lbl = document.createElement('div');
+    lbl.className = 'sender-label'; lbl.textContent = 'Professore';
+    const bub = document.createElement('div');
+    bub.className = 'bubble bot'; bub.textContent = testo;
+    wrap.appendChild(lbl); wrap.appendChild(bub);
+    row.appendChild(wrap);
+  } else if (ruolo === 'system') {
+    const bub = document.createElement('div');
+    bub.className = 'bubble system'; bub.textContent = testo;
+    row.appendChild(bub);
+    row.style.justifyContent = 'center';
+  } else {
+    const bub = document.createElement('div');
+    bub.className = 'bubble user'; bub.textContent = testo;
+    row.appendChild(bub);
+  }
+
+  msgs.appendChild(row);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function setTyping(vis) {
+  document.getElementById('typing-row').style.display = vis ? 'block' : 'none';
+  const msgs = document.getElementById('messages');
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+async function chiamaAPI() {
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT,
+        messages: stato.conversazione
+      })
+    });
+    const data = await res.json();
+    const testo = (data.content || []).map(b => b.text || '').join('');
+    setTyping(false);
+    stato.conversazione.push({ role: 'assistant', content: testo });
+    aggiungiBolla('bot', testo);
+    document.getElementById('send-btn').disabled = false;
+    document.getElementById('user-input').focus();
+  } catch (e) {
+    setTyping(false);
+    aggiungiBolla('system', '⚠️ Errore di connessione. Riprova.');
+    document.getElementById('send-btn').disabled = false;
+  }
+}
+
+// ══════════════════════════════════════════
+// CODICE DOCENTE → TERMINA
+// ══════════════════════════════════════════
+function apriModaleCodice() {
+  document.getElementById('codice-input').value = '';
+  document.getElementById('modal-error').style.display = 'none';
+  document.getElementById('modal-codice').classList.add('open');
+  setTimeout(() => document.getElementById('codice-input').focus(), 100);
+}
+function chiudiModale() {
+  document.getElementById('modal-codice').classList.remove('open');
+}
+function confermaCodice() {
+  const val = document.getElementById('codice-input').value.trim();
+  if (val !== CODICE_DOCENTE) {
+    document.getElementById('modal-error').style.display = 'block';
+    return;
+  }
+  chiudiModale();
+  terminaColloquio();
+}
+
+async function terminaColloquio() {
+  stato.terminato = true;
+  document.getElementById('send-btn').disabled = true;
+  document.getElementById('user-input').disabled = true;
+  document.getElementById('user-input').placeholder = 'Colloquio terminato dal docente';
+  aggiungiBolla('system', '✅ Colloquio terminato dal docente. Elaborazione valutazione…');
+  showScreen('risultato');
+  await generaValutazione();
+}
+
+// ══════════════════════════════════════════
+// VALUTAZIONE
+// ══════════════════════════════════════════
+async function generaValutazione() {
+  const trascrizione = stato.conversazione
+    .filter(m => !(m.role === 'user' && m.content.startsWith('Lo studente si chiama')))
+    .map(m => `${m.role === 'user' ? 'STUDENTE' : 'PROFESSORE'}: ${m.content}`)
+    .join('\n\n');
+
+  const prompt = `Hai appena condotto una verifica di EDUCAZIONE CIVICA con lo studente: ${stato.nome}, classe ${stato.classe}.
+L'obiettivo della verifica era valutare la capacità di collegare i contenuti di Scienze degli Alimenti agli obiettivi dell'Agenda 2030.
+
+Trascrizione del colloquio:
+${trascrizione}
+
+Genera una valutazione FINALE. Rispondi SOLO con un oggetto JSON (senza markdown, senza backtick), con questa struttura esatta:
+{
+  "voto": (numero da 1.0 a 10.0 con un decimale),
+  "descrizione": ("Insufficiente" | "Mediocre" | "Sufficiente" | "Discreto" | "Buono" | "Distinto" | "Ottimo" | "Eccellente"),
+  "conoscenze_agenda": { "pt": X, "max": 4, "nota": "valuta la conoscenza degli SDG e del loro significato" },
+  "capacita_collegamento": { "pt": X, "max": 4, "nota": "valuta la capacità di collegare scienze degli alimenti agli SDG con esempi concreti" },
+  "esposizione": { "pt": X, "max": 2, "nota": "valuta chiarezza e proprietà di linguaggio" },
+  "forza": ["...", "..."],
+  "miglioramento": ["...", "..."],
+  "feedback": "2-3 frasi personali per lo studente, focalizzate sui collegamenti Agenda 2030 che ha saputo fare.",
+  "sintesi_docente": "1-2 righe di sintesi per il registro del docente (es: capacità di collegamento, SDG più solidi e lacune)."
+}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const raw = (data.content || []).map(b => b.text || '').join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const val = JSON.parse(clean);
+    renderRisultato(val);
+    salvaValutazione(val, trascrizione);
+  } catch (e) {
+    renderFallback();
+  }
+}
+
+function getColore(v) {
+  if (v >= 9) return 'var(--green-700)';
+  if (v >= 7.5) return 'var(--teal-500)';
+  if (v >= 6) return 'var(--amber-600)';
+  return 'var(--red-600)';
+}
+
+function renderRisultato(val) {
+  const colore = getColore(parseFloat(val.voto));
+  const html = `
+    <div class="ris-card">
+      <div class="ris-header">
+        <h2>Scheda di valutazione</h2>
+        <div class="ris-meta">${stato.nome} · ${stato.classe} · ${stato.data}</div>
+      </div>
+      <div class="voto-big">
+        <div class="voto-num" style="color:${colore}">${parseFloat(val.voto).toFixed(1)}</div>
+        <div class="voto-lbl">Voto finale / 10</div>
+        <div class="voto-desc">${val.descrizione}</div>
+      </div>
+      <div class="criteri">
+        <div class="crit-box">
+          <div class="crit-lbl">Conoscenza SDG</div>
+          <div class="crit-val" style="color:${getColore(val.conoscenze_agenda.pt/val.conoscenze_agenda.max*10)}">${val.conoscenze_agenda.pt}</div>
+          <div class="crit-max">/ ${val.conoscenze_agenda.max}</div>
+          <div class="crit-note">${val.conoscenze_agenda.nota}</div>
+        </div>
+        <div class="crit-box">
+          <div class="crit-lbl">Capacità di collegamento</div>
+          <div class="crit-val" style="color:${getColore(val.capacita_collegamento.pt/val.capacita_collegamento.max*10)}">${val.capacita_collegamento.pt}</div>
+          <div class="crit-max">/ ${val.capacita_collegamento.max}</div>
+          <div class="crit-note">${val.capacita_collegamento.nota}</div>
+        </div>
+        <div class="crit-box">
+          <div class="crit-lbl">Esposizione</div>
+          <div class="crit-val" style="color:${getColore(val.esposizione.pt/val.esposizione.max*10)}">${val.esposizione.pt}</div>
+          <div class="crit-max">/ ${val.esposizione.max}</div>
+          <div class="crit-note">${val.esposizione.nota}</div>
+        </div>
+      </div>
+      <div class="feedback-strip">
+        <div class="flbl">Feedback per lo studente</div>
+        ${val.feedback}
+      </div>
+      <div class="pf-grid">
+        <div class="pf-box forza">
+          <div class="pf-title">✅ Punti di forza</div>
+          <ul class="pf-list">${(val.forza||[]).map(f=>`<li>${f}</li>`).join('')}</ul>
+        </div>
+        <div class="pf-box miglio">
+          <div class="pf-title">📈 Da migliorare</div>
+          <ul class="pf-list">${(val.miglioramento||[]).map(m=>`<li>${m}</li>`).join('')}</ul>
+        </div>
+      </div>
+      <div class="ris-actions">
+        <button class="btn-print" onclick="window.print()">🖨️ Stampa</button>
+        <button class="btn-reset" onclick="nuovaVerifica()">↺ Nuova verifica</button>
+      </div>
+    </div>`;
+  document.getElementById('ris-content').innerHTML = html;
+}
+
+function renderFallback() {
+  document.getElementById('ris-content').innerHTML = `
+    <div class="ris-card">
+      <div class="ris-header"><h2>Colloquio registrato</h2><div class="ris-meta">${stato.nome} · ${stato.classe}</div></div>
+      <p style="text-align:center;padding:1.5rem;color:var(--text-soft);font-style:italic">Errore nella generazione automatica della valutazione.<br>La trascrizione è stata salvata nella dashboard docente.</p>
+      <div class="ris-actions">
+        <button class="btn-reset" onclick="nuovaVerifica()">↺ Nuova verifica</button>
+      </div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════
+// STORAGE (shared = visibile a tutti gli accessi)
+// ══════════════════════════════════════════
+async function salvaValutazione(val, trascrizione) {
+  try {
+    let lista = [];
+    try {
+      const r = await window.storage.get(STORAGE_KEY, true);
+      if (r) lista = JSON.parse(r.value);
+    } catch(e) {}
+
+    lista.push({
+      id: Date.now(),
+      nome: stato.nome,
+      classe: stato.classe,
+      data: stato.data,
+      voto: val.voto,
+      descrizione: val.descrizione,
+      conoscenze: val.conoscenze,
+      agenda2030: val.agenda2030,
+      esposizione: val.esposizione,
+      forza: val.forza,
+      miglioramento: val.miglioramento,
+      feedback: val.feedback,
+      sintesi: val.sintesi_docente || '',
+      trascrizione: trascrizione
+    });
+
+    await window.storage.set(STORAGE_KEY, JSON.stringify(lista), true);
+  } catch(e) { console.warn('Storage non disponibile', e); }
+}
+
+// ══════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════
+function apriDashboard() {
+  document.getElementById('dash-codice-input').value = '';
+  document.getElementById('dash-error').style.display = 'none';
+  document.getElementById('modal-dash').classList.add('open');
+  setTimeout(() => document.getElementById('dash-codice-input').focus(), 100);
+}
+function chiudiModaleDash() { document.getElementById('modal-dash').classList.remove('open'); }
+function confermaDash() {
+  if (document.getElementById('dash-codice-input').value.trim() !== CODICE_DOCENTE) {
+    document.getElementById('dash-error').style.display = 'block'; return;
+  }
+  chiudiModaleDash();
+  showScreen('dashboard');
+  caricaDashboard();
+}
+
+async function caricaDashboard() {
+  const body = document.getElementById('dash-body');
+  body.innerHTML = '<p style="text-align:center;padding:2rem;color:var(--text-soft)">Caricamento…</p>';
+  let lista = [];
+  try {
+    const r = await window.storage.get(STORAGE_KEY, true);
+    if (r) lista = JSON.parse(r.value);
+  } catch(e) {}
+
+  if (!lista.length) {
+    body.innerHTML = '<p class="empty-state">Nessuna verifica registrata ancora.</p>'; return;
+  }
+
+  lista.sort((a,b) => b.id - a.id);
+  const media = (lista.reduce((s,i) => s + parseFloat(i.voto), 0) / lista.length).toFixed(2);
+  const suff = lista.filter(i => parseFloat(i.voto) >= 6).length;
+
+  body.innerHTML = `
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-val">${lista.length}</div><div class="stat-lbl">Verifiche</div></div>
+      <div class="stat-card"><div class="stat-val">${media}</div><div class="stat-lbl">Media classe</div></div>
+      <div class="stat-card"><div class="stat-val">${suff}</div><div class="stat-lbl">Sufficienti</div></div>
+      <div class="stat-card"><div class="stat-val">${lista.length - suff}</div><div class="stat-lbl">Insufficienti</div></div>
+    </div>
+    <div class="table-wrap">
+      <table class="dash-table">
+        <thead><tr>
+          <th>Studente</th><th>Classe</th><th>Data</th><th>Voto</th><th>Sintesi</th><th></th>
+        </tr></thead>
+        <tbody id="dash-tbody"></tbody>
+      </table>
+    </div>`;
+
+  const tbody = document.getElementById('dash-tbody');
+  lista.forEach(s => {
+    const voto = parseFloat(s.voto);
+    const colore = voto >= 9 ? '#3B6D11' : voto >= 7.5 ? '#0F6E56' : voto >= 6 ? '#BA7517' : '#A32D2D';
+    const bg = voto >= 9 ? '#EAF3DE' : voto >= 7.5 ? '#E1F5EE' : voto >= 6 ? '#FAEEDA' : '#FCEBEB';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${s.nome}</strong></td>
+      <td>${s.classe}</td>
+      <td style="white-space:nowrap">${s.data}</td>
+      <td><span class="voto-chip" style="color:${colore};background:${bg}">${voto.toFixed(1)}</span></td>
+      <td style="font-size:0.78rem;color:var(--text-soft);max-width:200px">${s.sintesi || s.descrizione}</td>
+      <td style="white-space:nowrap">
+        <button class="detail-btn" onclick="apriDetail(${s.id})">Dettaglio</button>
+        <button class="del-btn" onclick="eliminaRecord(${s.id})">✕</button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+
+  window._dashLista = lista;
+}
+
+function apriDetail(id) {
+  const s = (window._dashLista || []).find(x => x.id === id);
+  if (!s) return;
+  const voto = parseFloat(s.voto);
+  const colore = getColore(voto);
+  document.getElementById('detail-content').innerHTML = `
+    <h3>${s.nome} <span style="font-size:1rem;color:var(--text-soft)">· ${s.classe}</span></h3>
+    <div style="margin:0.5rem 0 0.8rem;font-size:0.85rem;color:var(--text-soft)">${s.data}</div>
+    <div style="display:flex;gap:10px;align-items:baseline;margin-bottom:0.8rem">
+      <span style="font-family:'DM Serif Display',serif;font-size:2.5rem;color:${colore}">${voto.toFixed(1)}</span>
+      <span style="font-size:0.9rem;color:var(--text-soft);font-style:italic">${s.descrizione}</span>
+    </div>
+    <div style="font-size:0.82rem;margin-bottom:0.8rem;line-height:1.6;color:var(--teal-700);background:var(--teal-100);border-left:3px solid var(--teal-500);padding:0.6rem 0.8rem;border-radius:0 8px 8px 0">${s.feedback}</div>
+    <details style="font-size:0.8rem;cursor:pointer">
+      <summary style="color:var(--green-700);font-weight:600;margin-bottom:6px">Trascrizione colloquio</summary>
+      <div class="transcript-box">${s.trascrizione || '—'}</div>
+    </details>`;
+  document.getElementById('modal-detail').classList.add('open');
+}
+function chiudiDetail() { document.getElementById('modal-detail').classList.remove('open'); }
+
+async function eliminaRecord(id) {
+  if (!confirm('Eliminare questa valutazione?')) return;
+  let lista = window._dashLista || [];
+  lista = lista.filter(x => x.id !== id);
+  window._dashLista = lista;
+  await window.storage.set(STORAGE_KEY, JSON.stringify(lista), true);
+  caricaDashboard();
+}
+
+function esportaCSV() {
+  const lista = window._dashLista || [];
+  if (!lista.length) { alert('Nessun dato da esportare.'); return; }
+  const righe = [['Nome','Classe','Data','Voto','Descrizione','Conoscenze','Agenda2030','Esposizione','Sintesi']];
+  lista.forEach(s => righe.push([
+    s.nome, s.classe, s.data, parseFloat(s.voto).toFixed(1), s.descrizione,
+    `${s.conoscenze?.pt||''}/${s.conoscenze?.max||''}`,
+    `${s.agenda2030?.pt||''}/${s.agenda2030?.max||''}`,
+    `${s.esposizione?.pt||''}/${s.esposizione?.max||''}`,
+    (s.sintesi||'').replace(/,/g,' ')
+  ]));
+  const csv = righe.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'valutazioni_scienze_alimenti.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+// ══════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════
+function nuovaVerifica() {
+  stato = { nome:'', classe:'', data:'', conversazione:[], terminato:false };
+  document.getElementById('inp-nome').value = '';
+  document.getElementById('inp-classe').value = '';
+  showScreen('setup');
+}
+
+document.getElementById('inp-data').valueAsDate = new Date();
+
+document.getElementById('user-input').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+</script>
+</body>
+</html>
