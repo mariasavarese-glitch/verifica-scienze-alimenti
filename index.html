@@ -623,362 +623,91 @@ function setTyping(vis) {
 }
 
 async function chiamaAPI() {
+
   try {
-    const messaggi = [{ role: 'system', content: SYSTEM_PROMPT }, ...stato.conversazione];
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + GROQ_KEY
+
+    const messaggi = [
+      {
+        role: 'system',
+        content: SYSTEM_PROMPT
       },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        max_tokens: 1000,
-        messages: messaggi
-      })
-    });
+      ...stato.conversazione
+    ];
+
+    const res = await fetch(
+      'https://api.groq.com/openai/v1/chat/completions',
+      {
+        method: 'POST',
+
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + GROQ_KEY
+        },
+
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          temperature: 0.7,
+          max_tokens: 700,
+          messages: messaggi
+        })
+      }
+    );
+
+    if (!res.ok) {
+
+      const errore = await res.text();
+
+      throw new Error(
+        'Errore API Groq: ' +
+        res.status +
+        ' - ' +
+        errore
+      );
+    }
+
     const data = await res.json();
-    const testo = data.choices?.[0]?.message?.content || '';
+
+    console.log('RISPOSTA API:', data);
+
+    const testo =
+      data?.choices?.[0]?.message?.content;
+
     setTyping(false);
-    stato.conversazione.push({ role: 'assistant', content: testo });
+
+    if (!testo || testo.trim() === '') {
+
+      aggiungiBolla(
+        'system',
+        '⚠️ Il professore non ha risposto.'
+      );
+
+      document.getElementById('send-btn').disabled = false;
+
+      return;
+    }
+
+    stato.conversazione.push({
+      role: 'assistant',
+      content: testo
+    });
+
     aggiungiBolla('bot', testo);
+
     document.getElementById('send-btn').disabled = false;
+
     document.getElementById('user-input').focus();
+
   } catch (e) {
+
+    console.error('ERRORE COMPLETO:', e);
+
     setTyping(false);
-    aggiungiBolla('system', '⚠️ Errore di connessione. Riprova.');
+
+    aggiungiBolla(
+      'system',
+      '⚠️ ' + e.message
+    );
+
     document.getElementById('send-btn').disabled = false;
   }
 }
-
-// ══════════════════════════════════════════
-// CODICE DOCENTE → TERMINA
-// ══════════════════════════════════════════
-function apriModaleCodice() {
-  document.getElementById('codice-input').value = '';
-  document.getElementById('modal-error').style.display = 'none';
-  document.getElementById('modal-codice').classList.add('open');
-  setTimeout(() => document.getElementById('codice-input').focus(), 100);
-}
-function chiudiModale() {
-  document.getElementById('modal-codice').classList.remove('open');
-}
-function confermaCodice() {
-  const val = document.getElementById('codice-input').value.trim();
-  if (val !== CODICE_DOCENTE) {
-    document.getElementById('modal-error').style.display = 'block';
-    return;
-  }
-  chiudiModale();
-  terminaColloquio();
-}
-
-async function terminaColloquio() {
-  stato.terminato = true;
-  document.getElementById('send-btn').disabled = true;
-  document.getElementById('user-input').disabled = true;
-  document.getElementById('user-input').placeholder = 'Colloquio terminato dal docente';
-  aggiungiBolla('system', '✅ Colloquio terminato dal docente. Elaborazione valutazione…');
-  showScreen('risultato');
-  await generaValutazione();
-}
-
-// ══════════════════════════════════════════
-// VALUTAZIONE
-// ══════════════════════════════════════════
-async function generaValutazione() {
-  const trascrizione = stato.conversazione
-    .filter(m => !(m.role === 'user' && m.content.startsWith('Lo studente si chiama')))
-    .map(m => `${m.role === 'user' ? 'STUDENTE' : 'PROFESSORE'}: ${m.content}`)
-    .join('\n\n');
-
-  const prompt = `Hai appena condotto una verifica di EDUCAZIONE CIVICA con lo studente: ${stato.nome}, classe ${stato.classe}.
-L'obiettivo della verifica era valutare la capacità di collegare i contenuti di Scienze degli Alimenti agli obiettivi dell'Agenda 2030.
-
-Trascrizione del colloquio:
-${trascrizione}
-
-Genera una valutazione FINALE. Rispondi SOLO con un oggetto JSON (senza markdown, senza backtick), con questa struttura esatta:
-{
-  "voto": (numero da 1.0 a 10.0 con un decimale),
-  "descrizione": ("Insufficiente" | "Mediocre" | "Sufficiente" | "Discreto" | "Buono" | "Distinto" | "Ottimo" | "Eccellente"),
-  "conoscenze_agenda": { "pt": X, "max": 4, "nota": "valuta la conoscenza degli SDG e del loro significato" },
-  "capacita_collegamento": { "pt": X, "max": 4, "nota": "valuta la capacità di collegare scienze degli alimenti agli SDG con esempi concreti" },
-  "esposizione": { "pt": X, "max": 2, "nota": "valuta chiarezza e proprietà di linguaggio" },
-  "forza": ["...", "..."],
-  "miglioramento": ["...", "..."],
-  "feedback": "2-3 frasi personali per lo studente, focalizzate sui collegamenti Agenda 2030 che ha saputo fare.",
-  "sintesi_docente": "1-2 righe di sintesi per il registro del docente (es: capacità di collegamento, SDG più solidi e lacune)."
-}`;
-
-  try {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + GROQ_KEY
-      },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    const data = await res.json();
-    const raw = data.choices?.[0]?.message?.content || '';
-    const clean = raw.replace(/```json|```/g, '').trim();
-    const val = JSON.parse(clean);
-    renderRisultato(val);
-    salvaValutazione(val, trascrizione);
-  } catch (e) {
-    renderFallback();
-  }
-}
-
-function getColore(v) {
-  if (v >= 9) return 'var(--green-700)';
-  if (v >= 7.5) return 'var(--teal-500)';
-  if (v >= 6) return 'var(--amber-600)';
-  return 'var(--red-600)';
-}
-
-function renderRisultato(val) {
-  const colore = getColore(parseFloat(val.voto));
-  const html = `
-    <div class="ris-card">
-      <div class="ris-header">
-        <h2>Scheda di valutazione</h2>
-        <div class="ris-meta">${stato.nome} · ${stato.classe} · ${stato.data}</div>
-      </div>
-      <div class="voto-big">
-        <div class="voto-num" style="color:${colore}">${parseFloat(val.voto).toFixed(1)}</div>
-        <div class="voto-lbl">Voto finale / 10</div>
-        <div class="voto-desc">${val.descrizione}</div>
-      </div>
-      <div class="criteri">
-        <div class="crit-box">
-          <div class="crit-lbl">Conoscenza SDG</div>
-          <div class="crit-val" style="color:${getColore(val.conoscenze_agenda.pt/val.conoscenze_agenda.max*10)}">${val.conoscenze_agenda.pt}</div>
-          <div class="crit-max">/ ${val.conoscenze_agenda.max}</div>
-          <div class="crit-note">${val.conoscenze_agenda.nota}</div>
-        </div>
-        <div class="crit-box">
-          <div class="crit-lbl">Capacità di collegamento</div>
-          <div class="crit-val" style="color:${getColore(val.capacita_collegamento.pt/val.capacita_collegamento.max*10)}">${val.capacita_collegamento.pt}</div>
-          <div class="crit-max">/ ${val.capacita_collegamento.max}</div>
-          <div class="crit-note">${val.capacita_collegamento.nota}</div>
-        </div>
-        <div class="crit-box">
-          <div class="crit-lbl">Esposizione</div>
-          <div class="crit-val" style="color:${getColore(val.esposizione.pt/val.esposizione.max*10)}">${val.esposizione.pt}</div>
-          <div class="crit-max">/ ${val.esposizione.max}</div>
-          <div class="crit-note">${val.esposizione.nota}</div>
-        </div>
-      </div>
-      <div class="feedback-strip">
-        <div class="flbl">Feedback per lo studente</div>
-        ${val.feedback}
-      </div>
-      <div class="pf-grid">
-        <div class="pf-box forza">
-          <div class="pf-title">✅ Punti di forza</div>
-          <ul class="pf-list">${(val.forza||[]).map(f=>`<li>${f}</li>`).join('')}</ul>
-        </div>
-        <div class="pf-box miglio">
-          <div class="pf-title">📈 Da migliorare</div>
-          <ul class="pf-list">${(val.miglioramento||[]).map(m=>`<li>${m}</li>`).join('')}</ul>
-        </div>
-      </div>
-      <div class="ris-actions">
-        <button class="btn-print" onclick="window.print()">🖨️ Stampa</button>
-        <button class="btn-reset" onclick="nuovaVerifica()">↺ Nuova verifica</button>
-      </div>
-    </div>`;
-  document.getElementById('ris-content').innerHTML = html;
-}
-
-function renderFallback() {
-  document.getElementById('ris-content').innerHTML = `
-    <div class="ris-card">
-      <div class="ris-header"><h2>Colloquio registrato</h2><div class="ris-meta">${stato.nome} · ${stato.classe}</div></div>
-      <p style="text-align:center;padding:1.5rem;color:var(--text-soft);font-style:italic">Errore nella generazione automatica della valutazione.<br>La trascrizione è stata salvata nella dashboard docente.</p>
-      <div class="ris-actions">
-        <button class="btn-reset" onclick="nuovaVerifica()">↺ Nuova verifica</button>
-      </div>
-    </div>`;
-}
-
-// ══════════════════════════════════════════
-// STORAGE (shared = visibile a tutti gli accessi)
-// ══════════════════════════════════════════
-async function salvaValutazione(val, trascrizione) {
-  try {
-    let lista = [];
-    try {
-      const r = await window.storage.get(STORAGE_KEY, true);
-      if (r) lista = JSON.parse(r.value);
-    } catch(e) {}
-
-    lista.push({
-      id: Date.now(),
-      nome: stato.nome,
-      classe: stato.classe,
-      data: stato.data,
-      voto: val.voto,
-      descrizione: val.descrizione,
-      conoscenze: val.conoscenze,
-      agenda2030: val.agenda2030,
-      esposizione: val.esposizione,
-      forza: val.forza,
-      miglioramento: val.miglioramento,
-      feedback: val.feedback,
-      sintesi: val.sintesi_docente || '',
-      trascrizione: trascrizione
-    });
-
-    await window.storage.set(STORAGE_KEY, JSON.stringify(lista), true);
-  } catch(e) { console.warn('Storage non disponibile', e); }
-}
-
-// ══════════════════════════════════════════
-// DASHBOARD
-// ══════════════════════════════════════════
-function apriDashboard() {
-  document.getElementById('dash-codice-input').value = '';
-  document.getElementById('dash-error').style.display = 'none';
-  document.getElementById('modal-dash').classList.add('open');
-  setTimeout(() => document.getElementById('dash-codice-input').focus(), 100);
-}
-function chiudiModaleDash() { document.getElementById('modal-dash').classList.remove('open'); }
-function confermaDash() {
-  if (document.getElementById('dash-codice-input').value.trim() !== CODICE_DOCENTE) {
-    document.getElementById('dash-error').style.display = 'block'; return;
-  }
-  chiudiModaleDash();
-  showScreen('dashboard');
-  caricaDashboard();
-}
-
-async function caricaDashboard() {
-  const body = document.getElementById('dash-body');
-  body.innerHTML = '<p style="text-align:center;padding:2rem;color:var(--text-soft)">Caricamento…</p>';
-  let lista = [];
-  try {
-    const r = await window.storage.get(STORAGE_KEY, true);
-    if (r) lista = JSON.parse(r.value);
-  } catch(e) {}
-
-  if (!lista.length) {
-    body.innerHTML = '<p class="empty-state">Nessuna verifica registrata ancora.</p>'; return;
-  }
-
-  lista.sort((a,b) => b.id - a.id);
-  const media = (lista.reduce((s,i) => s + parseFloat(i.voto), 0) / lista.length).toFixed(2);
-  const suff = lista.filter(i => parseFloat(i.voto) >= 6).length;
-
-  body.innerHTML = `
-    <div class="stats-row">
-      <div class="stat-card"><div class="stat-val">${lista.length}</div><div class="stat-lbl">Verifiche</div></div>
-      <div class="stat-card"><div class="stat-val">${media}</div><div class="stat-lbl">Media classe</div></div>
-      <div class="stat-card"><div class="stat-val">${suff}</div><div class="stat-lbl">Sufficienti</div></div>
-      <div class="stat-card"><div class="stat-val">${lista.length - suff}</div><div class="stat-lbl">Insufficienti</div></div>
-    </div>
-    <div class="table-wrap">
-      <table class="dash-table">
-        <thead><tr>
-          <th>Studente</th><th>Classe</th><th>Data</th><th>Voto</th><th>Sintesi</th><th></th>
-        </tr></thead>
-        <tbody id="dash-tbody"></tbody>
-      </table>
-    </div>`;
-
-  const tbody = document.getElementById('dash-tbody');
-  lista.forEach(s => {
-    const voto = parseFloat(s.voto);
-    const colore = voto >= 9 ? '#3B6D11' : voto >= 7.5 ? '#0F6E56' : voto >= 6 ? '#BA7517' : '#A32D2D';
-    const bg = voto >= 9 ? '#EAF3DE' : voto >= 7.5 ? '#E1F5EE' : voto >= 6 ? '#FAEEDA' : '#FCEBEB';
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><strong>${s.nome}</strong></td>
-      <td>${s.classe}</td>
-      <td style="white-space:nowrap">${s.data}</td>
-      <td><span class="voto-chip" style="color:${colore};background:${bg}">${voto.toFixed(1)}</span></td>
-      <td style="font-size:0.78rem;color:var(--text-soft);max-width:200px">${s.sintesi || s.descrizione}</td>
-      <td style="white-space:nowrap">
-        <button class="detail-btn" onclick="apriDetail(${s.id})">Dettaglio</button>
-        <button class="del-btn" onclick="eliminaRecord(${s.id})">✕</button>
-      </td>`;
-    tbody.appendChild(tr);
-  });
-
-  window._dashLista = lista;
-}
-
-function apriDetail(id) {
-  const s = (window._dashLista || []).find(x => x.id === id);
-  if (!s) return;
-  const voto = parseFloat(s.voto);
-  const colore = getColore(voto);
-  document.getElementById('detail-content').innerHTML = `
-    <h3>${s.nome} <span style="font-size:1rem;color:var(--text-soft)">· ${s.classe}</span></h3>
-    <div style="margin:0.5rem 0 0.8rem;font-size:0.85rem;color:var(--text-soft)">${s.data}</div>
-    <div style="display:flex;gap:10px;align-items:baseline;margin-bottom:0.8rem">
-      <span style="font-family:'DM Serif Display',serif;font-size:2.5rem;color:${colore}">${voto.toFixed(1)}</span>
-      <span style="font-size:0.9rem;color:var(--text-soft);font-style:italic">${s.descrizione}</span>
-    </div>
-    <div style="font-size:0.82rem;margin-bottom:0.8rem;line-height:1.6;color:var(--teal-700);background:var(--teal-100);border-left:3px solid var(--teal-500);padding:0.6rem 0.8rem;border-radius:0 8px 8px 0">${s.feedback}</div>
-    <details style="font-size:0.8rem;cursor:pointer">
-      <summary style="color:var(--green-700);font-weight:600;margin-bottom:6px">Trascrizione colloquio</summary>
-      <div class="transcript-box">${s.trascrizione || '—'}</div>
-    </details>`;
-  document.getElementById('modal-detail').classList.add('open');
-}
-function chiudiDetail() { document.getElementById('modal-detail').classList.remove('open'); }
-
-async function eliminaRecord(id) {
-  if (!confirm('Eliminare questa valutazione?')) return;
-  let lista = window._dashLista || [];
-  lista = lista.filter(x => x.id !== id);
-  window._dashLista = lista;
-  await window.storage.set(STORAGE_KEY, JSON.stringify(lista), true);
-  caricaDashboard();
-}
-
-function esportaCSV() {
-  const lista = window._dashLista || [];
-  if (!lista.length) { alert('Nessun dato da esportare.'); return; }
-  const righe = [['Nome','Classe','Data','Voto','Descrizione','Conoscenze','Agenda2030','Esposizione','Sintesi']];
-  lista.forEach(s => righe.push([
-    s.nome, s.classe, s.data, parseFloat(s.voto).toFixed(1), s.descrizione,
-    `${s.conoscenze?.pt||''}/${s.conoscenze?.max||''}`,
-    `${s.agenda2030?.pt||''}/${s.agenda2030?.max||''}`,
-    `${s.esposizione?.pt||''}/${s.esposizione?.max||''}`,
-    (s.sintesi||'').replace(/,/g,' ')
-  ]));
-  const csv = righe.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
-  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'valutazioni_scienze_alimenti.csv';
-  a.click(); URL.revokeObjectURL(url);
-}
-
-// ══════════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════════
-function nuovaVerifica() {
-  stato = { nome:'', classe:'', data:'', conversazione:[], terminato:false };
-  document.getElementById('inp-nome').value = '';
-  document.getElementById('inp-classe').value = '';
-  showScreen('setup');
-}
-
-document.getElementById('inp-data').valueAsDate = new Date();
-
-document.getElementById('user-input').addEventListener('input', function() {
-  this.style.height = 'auto';
-  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-});
-</script>
-</body>
-</html>
