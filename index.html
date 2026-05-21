@@ -148,9 +148,10 @@ function addMsg(text, type) {
   return div;
 }
 
-async function callAPI(msgs, system) {
+async function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+async function callAPI(msgs, system, retry=0) {
   const allMsgs = [{role:"system", content: system}, ...msgs];
-  // Tronca la conversazione se troppo lunga (max 20 messaggi)
   const msgsTroncati = allMsgs.length > 22 ? [allMsgs[0], ...allMsgs.slice(-20)] : allMsgs;
   const r = await fetch("https://veri.mariasavarese.workers.dev/", {
     method: "POST",
@@ -165,6 +166,17 @@ async function callAPI(msgs, system) {
   const d = await r.json();
   if (!d.choices || !d.choices[0] || !d.choices[0].message) {
     const errMsg = d.error ? d.error.message : JSON.stringify(d);
+    // Rate limit -> retry automatico fino a 3 volte
+    if (errMsg.includes("Rate limit") && retry < 3) {
+      const waitSec = 25 + retry * 10;
+      // Mostra messaggio di attesa se c e un elemento loading attivo
+      const loadingEls = document.querySelectorAll(".msg.loading");
+      if (loadingEls.length > 0) loadingEls[loadingEls.length-1].textContent = "Limite raggiunto, riprovo tra " + waitSec + " secondi...";
+      const resultEl = document.getElementById("result");
+      if (resultEl && resultEl.textContent.includes("corso")) resultEl.textContent = "Limite raggiunto, riprovo tra " + waitSec + " secondi...";
+      await sleep(waitSec * 1000);
+      return callAPI(msgs, system, retry + 1);
+    }
     throw new Error("Risposta API non valida: " + errMsg);
   }
   return d.choices[0].message.content;
