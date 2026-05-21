@@ -3,335 +3,305 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verifica Educazione Civica</title>
-
+<title>Verifica Scienze degli Alimenti — Classe Quinta</title>
 <style>
-body{
-margin:0;
-font-family:Arial,sans-serif;
-background:#f4f7f2;
-color:#222;
-}
-
-header{
-background:#2f6b2f;
-color:white;
-padding:15px;
-text-align:center;
-font-size:22px;
-font-weight:bold;
-}
-
-.container{
-max-width:900px;
-margin:auto;
-padding:20px;
-}
-
-.card{
-background:white;
-border-radius:12px;
-padding:20px;
-box-shadow:0 2px 10px rgba(0,0,0,0.1);
-margin-bottom:20px;
-}
-
-input,textarea,button{
-width:100%;
-padding:12px;
-margin-top:10px;
-border-radius:8px;
-border:1px solid #ccc;
-font-size:16px;
-box-sizing:border-box;
-}
-
-textarea{
-resize:vertical;
-min-height:80px;
-}
-
-button{
-background:#2f6b2f;
-color:white;
-border:none;
-cursor:pointer;
-font-weight:bold;
-}
-
-button:hover{
-background:#245324;
-}
-
-.chat{
-height:400px;
-overflow-y:auto;
-padding:10px;
-background:#eef3ea;
-border-radius:10px;
-margin-bottom:10px;
-}
-
-.msg{
-padding:10px;
-margin-bottom:10px;
-border-radius:10px;
-max-width:80%;
-white-space:pre-wrap;
-}
-
-.user{
-background:#2f6b2f;
-color:white;
-margin-left:auto;
-}
-
-.bot{
-background:white;
-border:1px solid #ccc;
-}
-
-.hidden{
-display:none;
-}
-
-.result{
-font-size:18px;
-line-height:1.6;
-}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f4f7f2;color:#222;min-height:100vh}
+header{background:#2f6b2f;color:white;padding:16px 20px;text-align:center;font-size:20px;font-weight:bold}
+.wrap{max-width:860px;margin:0 auto;padding:20px}
+.card{background:white;border-radius:12px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,0.08);margin-bottom:20px}
+.hidden{display:none}
+label{font-size:13px;color:#666;display:block;margin-bottom:4px;margin-top:12px}
+input[type=text]{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #ccc;font-size:15px;font-family:Arial}
+input[type=text]:focus{outline:none;border-color:#2f6b2f}
+.btn{width:100%;padding:11px;border-radius:8px;border:none;background:#2f6b2f;color:white;font-size:15px;font-weight:bold;cursor:pointer;margin-top:12px}
+.btn:hover{background:#245324}
+.btn-outline{background:white;color:#2f6b2f;border:2px solid #2f6b2f}
+.btn-outline:hover{background:#eef3ea}
+.chat-area{height:380px;overflow-y:auto;background:#eef3ea;border-radius:10px;padding:12px;margin-bottom:12px;display:flex;flex-direction:column;gap:10px}
+.msg{padding:10px 14px;border-radius:10px;max-width:85%;font-size:14px;line-height:1.6;white-space:pre-wrap}
+.msg.bot{background:white;border:1px solid #ddd;align-self:flex-start}
+.msg.user{background:#2f6b2f;color:white;align-self:flex-end}
+.msg.loading{color:#888;font-style:italic;align-self:flex-start;background:white;border:1px solid #ddd}
+textarea{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #ccc;font-size:14px;font-family:Arial;resize:vertical;min-height:70px}
+textarea:focus{outline:none;border-color:#2f6b2f}
+.btn-row{display:flex;gap:8px;margin-top:8px}
+.btn-send{flex:1;padding:10px;border-radius:8px;border:2px solid #2f6b2f;background:white;color:#2f6b2f;font-size:14px;font-weight:bold;cursor:pointer}
+.btn-send:hover{background:#eef3ea}
+.btn-end{padding:10px 16px;border-radius:8px;border:2px solid #b22222;background:#fff0f0;color:#b22222;font-size:14px;font-weight:bold;cursor:pointer}
+.btn-end:hover{background:#ffe0e0}
+.result-box{background:#f8f8f8;border-radius:8px;padding:16px;font-size:14px;line-height:1.8;white-space:pre-wrap;border:1px solid #ddd}
+.student-label{font-size:13px;color:#666;margin-bottom:10px;font-weight:bold}
+.status{font-size:13px;padding:8px 12px;border-radius:8px;margin-top:10px;text-align:center}
+.status.ok{background:#eef3ea;color:#2f6b2f;border:1px solid #c0ddb0}
+.status.err{background:#fff0f0;color:#b22222;border:1px solid #f0c0c0}
+.tab-row{display:flex;gap:8px;margin-bottom:16px}
+.tab{flex:1;padding:10px;border-radius:8px;border:2px solid #ccc;background:white;cursor:pointer;font-size:14px;font-weight:bold;text-align:center}
+.tab.active{background:#2f6b2f;color:white;border-color:#2f6b2f}
+.voti-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+.voti-table th{background:#2f6b2f;color:white;padding:9px 10px;text-align:left}
+.voti-table td{padding:9px 10px;border-bottom:1px solid #eee;vertical-align:top}
+.voti-table tr:hover td{background:#f4f7f2}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:13px;font-weight:bold}
+.badge-high{background:#eef3ea;color:#2f6b2f}
+.badge-mid{background:#fff8e0;color:#b8860b}
+.badge-low{background:#fff0f0;color:#b22222}
+.stats-row{display:flex;gap:12px;margin-bottom:16px}
+.stat-card{flex:1;background:#f4f7f2;border-radius:8px;padding:12px;text-align:center}
+.stat-num{font-size:26px;font-weight:bold;color:#2f6b2f}
+.stat-label{font-size:12px;color:#666;margin-top:2px}
+h2{font-size:17px;font-weight:bold;margin-bottom:8px}
 </style>
 </head>
-
 <body>
-
-<header>
-Verifica Educazione Civica - Agenda 2030
-</header>
-
-<div class="container">
-
-<div class="card" id="setup">
-<h2>Inizia verifica</h2>
-
-<input type="text" id="nome" placeholder="Nome e cognome">
-<input type="text" id="classe" placeholder="Classe">
-
-<button onclick="startChat()">Inizia</button>
+<header>🍽️ Verifica Scienze degli Alimenti — Classe Quinta</header>
+<div class="wrap">
+  <div class="tab-row">
+    <button class="tab active" id="tabStudente" onclick="switchMode('studente')">👤 Studente</button>
+    <button class="tab" id="tabDocente" onclick="switchMode('docente')">🎓 Docente</button>
+  </div>
+  <div id="modoStudente">
+    <div class="card" id="setup">
+      <h2>Inizia verifica</h2>
+      <label>Nome e cognome</label>
+      <input type="text" id="nome" placeholder="es. Mario Rossi">
+      <label>Classe</label>
+      <input type="text" id="classe" placeholder="es. 5A">
+      <button class="btn" onclick="startChat()">Inizia verifica</button>
+    </div>
+    <div class="card hidden" id="chatSection">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div class="student-label" id="studentLabel" style="margin:0"></div>
+        <div id="contatore" style="font-size:13px;color:#2f6b2f;font-weight:bold;background:#eef3ea;padding:4px 12px;border-radius:12px">Risposte date: 0</div>
+      </div>
+      <div class="chat-area" id="chat"></div>
+      <textarea id="userInput" placeholder="Scrivi qui la tua risposta... (Invio per inviare)"></textarea>
+      <div class="btn-row">
+        <button class="btn-send" onclick="sendMessage()">Invia risposta</button>
+        <button class="btn-end" id="btnTermina" onclick="finishTest()" style="opacity:0.4;cursor:not-allowed" disabled>Termina e consegna</button>
+      </div>
+      <div id="terminaHint" style="font-size:12px;color:#888;text-align:right;margin-top:4px">Il tasto si attiva dopo almeno 10 risposte</div>
+    </div>
+    <div class="card hidden" id="resultSection">
+      <h2>La tua valutazione</h2>
+      <div class="result-box" id="result">Generazione valutazione in corso...</div>
+      <div id="saveStatus"></div>
+      <button class="btn btn-outline" onclick="resetStudente()" style="margin-top:14px">Nuova verifica</button>
+    </div>
+  </div>
+  <div id="modoDocente" class="hidden">
+    <div class="card">
+      <div class="stats-row" id="statsRow" style="display:none">
+        <div class="stat-card"><div class="stat-num" id="statN">0</div><div class="stat-label">Studenti</div></div>
+        <div class="stat-card"><div class="stat-num" id="statMedia">-</div><div class="stat-label">Media classe</div></div>
+        <div class="stat-card"><div class="stat-num" id="statMax">-</div><div class="stat-label">Voto piu alto</div></div>
+        <div class="stat-card"><div class="stat-num" id="statMin">-</div><div class="stat-label">Voto piu basso</div></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <h2>Registro valutazioni</h2>
+        <button class="btn-send" onclick="exportPDF()" style="width:auto;padding:8px 18px">Esporta PDF</button>
+      </div>
+      <div id="votiContainer">
+        <p style="color:#888;font-size:14px;text-align:center;padding:20px 0">Nessuna valutazione ancora.</p>
+      </div>
+    </div>
+  </div>
 </div>
-
-<div class="card hidden" id="chatSection">
-
-<h2 id="studentTitle"></h2>
-
-<div class="chat" id="chat"></div>
-
-<textarea id="userInput" placeholder="Scrivi qui..."></textarea>
-
-<button onclick="sendMessage()">Invia risposta</button>
-
-<button onclick="finishTest()" style="margin-top:20px;background:#b22222;">
-Termina verifica
-</button>
-
-</div>
-
-<div class="card hidden" id="resultSection">
-<h2>Valutazione finale</h2>
-
-<div id="result" class="result"></div>
-
-<button onclick="location.reload()">
-Nuova verifica
-</button>
-</div>
-
-</div>
-
 <script>
-
-const API_KEY = "INSERISCI_LA_TUA_API_KEY_GROQ";
-const MODEL = "llama-3.3-70b-versatile";
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbzvP64yS9kbw8jJEP45LuCR2cflbqk-9D4Eg197YjZdx05JLo08u16kdgaZ-vanKlid/exec";
+const SYSTEM_PROMPT = "Sei un professore di Scienze e Cultura dell'Alimentazione di un istituto alberghiero italiano, classe quinta.\nStai conducendo una verifica orale che collega gli argomenti disciplinari agli obiettivi dell'Agenda 2030.\nI 17 obiettivi dell'Agenda 2030 (tutti potenzialmente collegabili):\nSDG 1 Poverta zero, SDG 2 Fame zero, SDG 3 Salute e benessere, SDG 4 Istruzione di qualita,\nSDG 5 Parita di genere, SDG 6 Acqua pulita, SDG 7 Energia pulita, SDG 8 Lavoro dignitoso,\nSDG 9 Industria e innovazione, SDG 10 Ridurre le disuguaglianze, SDG 11 Citta sostenibili,\nSDG 12 Consumo responsabile, SDG 13 Lotta al clima, SDG 14 Vita sott'acqua,\nSDG 15 Vita sulla terra, SDG 16 Pace e giustizia, SDG 17 Partnership.\nArgomenti del programma e principali SDG collegabili (ma non esclusivi):\n- Qualita totale degli alimenti: DOP, IGP, STG, filiera corta, Km 0, frodi alimentari (SDG 2, 8, 9, 12, 16)\n- Etichettatura: indicazioni obbligatorie, allergeni, trasparenza (SDG 3, 10, 12, 16)\n- Igiene e sicurezza: pacchetto igiene, EFSA, HACCP, contaminazioni, MTA, 5 Chiavi OMS (SDG 2, 3, 6, 9)\n- Alimentazione equilibrata: nutrienti, Dieta Mediterranea, diete vegetariane, LARN (SDG 2, 3, 13, 14, 15)\n- Patologie correlate: obesita, tumori, aterosclerosi, ipertensione, diabete, celiachia (SDG 3, 10)\n- Alimentazione sostenibile: cibi ultraprocessati, NOVA, nuovi prodotti, spreco alimentare (SDG 2, 6, 12, 13, 14, 15)\nPer ogni domanda chiedi allo studente di:\n1. Collegare l'argomento a uno o piu dei 17 SDG motivando il collegamento\n2. Indicare almeno un'azione concreta in un ristorante (come OSA) e una a casa come consumatore\nEsempi di azioni attese:\n- Ristorante: menu stagionale e locale per SDG 13, corretta applicazione HACCP per SDG 3, etichettatura chiara degli allergeni per SDG 3 e 10, riduzione sprechi per SDG 12, uso prodotti DOP/IGP per SDG 8 e 12\n- Casa: acquisto consapevole leggendo le etichette, preferenza prodotti a filiera corta, riduzione cibi ultraprocessati, dieta varia ed equilibrata, raccolta differenziata imballaggi alimentari\nValorizza chi sa individuare azioni concrete e motivate e collegamenti SDG non ovvi.\nFai almeno 10 domande, una alla volta, senza un limite massimo. Varia gli argomenti coprendo tutti i moduli. Dopo ogni risposta dai un feedback brevissimo (1 riga) e fai subito la domanda successiva. Continua finche lo studente non clicca Termina. Risposte sempre brevi, massimo 2-3 righe.";
+const EVAL_INTRO = "Valuta questo colloquio orale di Scienze e Cultura dell'Alimentazione di uno studente di quinta superiore di un istituto alberghiero italiano. La verifica riguarda il collegamento tra gli argomenti disciplinari (qualita totale, etichettatura, HACCP, nutrizione, patologie, sostenibilita) e gli obiettivi dell'Agenda 2030, con particolare attenzione alle azioni concrete in un ristorante (come OSA) e a casa come consumatore.";
+const EVAL_SCALE = "Usa questa scala di valutazione equilibrata che considera tre dimensioni:\na) Conoscenza disciplinare\nb) Capacita di collegamento con i 17 SDG dell'Agenda 2030\nc) Capacita di proporre azioni concrete in un ristorante (come OSA) e a casa come consumatore\nScala:\n- 9-10: eccellente in tutte e tre le dimensioni, collegamenti non ovvi con gli SDG, azioni concrete e motivate\n- 8: buona conoscenza, collegamenti corretti, azioni concrete presenti ma non sempre approfondite\n- 6-7: conoscenza sufficiente, collegamenti generici, azioni superficiali\n- 1-5: lacune significative, incapace di collegare agli SDG o proporre azioni concrete\nUna risposta buona ma non eccellente vale 8, non 9 o 10.";
+const START_MSG = "Inizia il colloquio con una domanda che colleghi un argomento di Scienze degli Alimenti a un obiettivo dell'Agenda 2030.";
+const PDF_TITLE = 'Registro Valutazioni — Verifica Scienze degli Alimenti (Classe Quinta)';
+const PDF_SUB = 'Argomento: Scienze degli Alimenti e Agenda 2030 — Classe Quinta';
 
 let messages = [];
+let risposteCount = 0;
+let votiLocali = [];
 
-const systemPrompt = `
-Sei un professore di Educazione Civica di un istituto alberghiero.
-
-Argomento:
-Agenda 2030 collegata a Scienze degli Alimenti.
-
-Fai domande semplici a uno studente di prima superiore.
-
-Argomenti:
-- SDG 2 Fame Zero
-- SDG 3 Salute e Benessere
-- SDG 12 Consumo Responsabile
-- SDG 13 Cambiamento climatico
-
-Collega:
-- etichetta alimentare
-- spreco alimentare
-- sicurezza alimentare
-- HACCP
-- nutrienti
-- batteri
-- allergeni
-- raccolta differenziata
-
-Fai UNA domanda alla volta.
-`;
-
-function addMessage(text,type){
-
-const chat=document.getElementById("chat");
-
-const div=document.createElement("div");
-
-div.className="msg "+type;
-
-div.textContent=text;
-
-chat.appendChild(div);
-
-chat.scrollTop=chat.scrollHeight;
+function switchMode(m) {
+  document.getElementById('modoStudente').classList.toggle('hidden', m !== 'studente');
+  document.getElementById('modoDocente').classList.toggle('hidden', m !== 'docente');
+  document.getElementById('tabStudente').classList.toggle('active', m === 'studente');
+  document.getElementById('tabDocente').classList.toggle('active', m === 'docente');
+  if (m === 'docente') renderVoti();
 }
 
-async function askAI(){
-
-const response=await fetch(
-"https://api.groq.com/openai/v1/chat/completions",
-{
-method:"POST",
-headers:{
-"Content-Type":"application/json",
-"Authorization":"Bearer "+API_KEY
-},
-body:JSON.stringify({
-model:MODEL,
-messages:messages
-})
+function addMsg(text, type) {
+  const chat = document.getElementById("chat");
+  const div = document.createElement("div");
+  div.className = "msg " + type;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  return div;
 }
-);
 
-const data=await response.json();
+async function callAPI(msgs, system) {
+  const allMsgs = [{role:"system", content: system}, ...msgs];
+  // Tronca la conversazione se troppo lunga (max 20 messaggi)
+  const msgsTroncati = allMsgs.length > 22 ? [allMsgs[0], ...allMsgs.slice(-20)] : allMsgs;
+  const r = await fetch("https://veri.mariasavarese.workers.dev/", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      model: "llama-3.1-8b-instant",
+      max_tokens: 500,
+      messages: msgsTroncati
+    })
+  });
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  const d = await r.json();
+  if (!d.choices || !d.choices[0] || !d.choices[0].message) {
+    const errMsg = d.error ? d.error.message : JSON.stringify(d);
+    throw new Error("Risposta API non valida: " + errMsg);
+  }
+  return d.choices[0].message.content;
+}
 
-const text=data.choices[0].message.content;
+async function startChat() {
+  const nome = document.getElementById("nome").value.trim();
+  const classe = document.getElementById("classe").value.trim();
+  if (!nome || !classe) { alert("Inserisci nome e classe"); return; }
+  document.getElementById("setup").classList.add("hidden");
+  document.getElementById("chatSection").classList.remove("hidden");
+  document.getElementById("studentLabel").textContent = nome + " - " + classe;
+  messages = [];
+  risposteCount = 0;
+  const loading = addMsg("Sto preparando la prima domanda...", "loading");
+  try {
+    const reply = await callAPI([{role:"user", content: START_MSG}], SYSTEM_PROMPT);
+    loading.remove();
+    messages.push({role:"user", content: START_MSG});
+    messages.push({role:"assistant", content: reply});
+    addMsg(reply, "bot");
+  } catch(e) {
+    loading.textContent = "Errore connessione: " + e.message;
+  }
+}
 
-messages.push({
-role:"assistant",
-content:text
+async function sendMessage() {
+  const input = document.getElementById("userInput");
+  const text = input.value.trim();
+  if (!text) return;
+  addMsg(text, "user");
+  messages.push({role:"user", content: text});
+  input.value = "";
+  risposteCount++;
+  document.getElementById("contatore").textContent = "Risposte date: " + risposteCount;
+  if (risposteCount >= 10) {
+    const b = document.getElementById("btnTermina");
+    b.disabled = false; b.style.opacity = "1"; b.style.cursor = "pointer";
+    document.getElementById("terminaHint").textContent = "Minimo raggiunto! Puoi consegnare quando vuoi.";
+    document.getElementById("terminaHint").style.color = "#2f6b2f";
+  }
+  const loading = addMsg("...", "loading");
+  try {
+    const reply = await callAPI(messages, SYSTEM_PROMPT);
+    loading.remove();
+    messages.push({role:"assistant", content: reply});
+    addMsg(reply, "bot");
+  } catch(e) {
+    loading.textContent = "Errore connessione: " + e.message;
+  }
+}
+
+async function finishTest() {
+  const label = document.getElementById("studentLabel").textContent;
+  const nome = label.split(" - ")[0];
+  const classe = label.split(" - ")[1];
+  document.getElementById("chatSection").classList.add("hidden");
+  document.getElementById("resultSection").classList.remove("hidden");
+  document.getElementById("result").textContent = "Generazione valutazione in corso...";
+  const transcript = messages.map(m => m.role.toUpperCase() + ": " + m.content).join("\n\n");
+  const evalPrompt = EVAL_INTRO + "\n\n" + EVAL_SCALE + "\n\nRispondi SOLO con un oggetto JSON valido, senza testo prima o dopo, nel formato esatto:\n{\"voto\":7,\"giudizio\":\"testo breve\",\"punti_forza\":\"testo\",\"da_migliorare\":\"testo\"}\n\nColloquio:\n" + transcript;
+  try {
+    const raw = await callAPI([{role:"user", content: evalPrompt}], "Sei un valutatore scolastico preciso. Rispondi SEMPRE e SOLO con un oggetto JSON valido senza nessun testo prima o dopo e senza backtick. Formato esatto: {\"voto\":7,\"giudizio\":\"testo\",\"punti_forza\":\"testo\",\"da_migliorare\":\"testo\"}");
+    let cleaned = raw.replace(/```json/g,"").replace(/```/g,"").trim();
+    // Estrai JSON anche se c'e testo intorno
+    const match = cleaned.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error("JSON non trovato nella risposta");
+    const val = JSON.parse(match[0]);
+    if (!val.voto || !val.giudizio) throw new Error("Campi JSON mancanti");
+    document.getElementById("result").textContent = "Voto: " + val.voto + "/10\n\nGiudizio: " + val.giudizio + "\n\nPunti di forza: " + (val.punti_forza||"-") + "\n\nDa migliorare: " + (val.da_migliorare||"-");
+    const entry = {nome, classe, voto: val.voto, giudizio: val.giudizio, punti_forza: val.punti_forza||"-", da_migliorare: val.da_migliorare||"-", ora: new Date().toLocaleTimeString("it-IT")};
+    votiLocali.push(entry);
+    const status = document.getElementById("saveStatus");
+    try {
+      await fetch(SHEET_URL, {method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"}, body: JSON.stringify(entry)});
+      status.className = "status ok";
+      status.textContent = "Valutazione salvata nel registro Google Sheets";
+    } catch(err) {
+      status.className = "status err";
+      status.textContent = "Salvataggio Google Sheets non riuscito";
+    }
+  } catch(e) {
+    document.getElementById("result").textContent = "Errore nella valutazione: " + e.message + "\nRiprova a cliccare Termina e consegna.";
+  }
+}
+
+function resetStudente() {
+  document.getElementById("resultSection").classList.add("hidden");
+  document.getElementById("setup").classList.remove("hidden");
+  document.getElementById("nome").value = "";
+  document.getElementById("classe").value = "";
+  document.getElementById("chat").innerHTML = "";
+  document.getElementById("saveStatus").textContent = "";
+  document.getElementById("contatore").textContent = "Risposte date: 0";
+  const b = document.getElementById("btnTermina");
+  b.disabled = true; b.style.opacity = "0.4"; b.style.cursor = "not-allowed";
+  document.getElementById("terminaHint").textContent = "Il tasto si attiva dopo almeno 10 risposte";
+  document.getElementById("terminaHint").style.color = "#888";
+  messages = []; risposteCount = 0;
+}
+
+function renderVoti() {
+  const c = document.getElementById("votiContainer");
+  const stats = document.getElementById("statsRow");
+  if (votiLocali.length === 0) {
+    stats.style.display = "none";
+    c.innerHTML = "<p style='color:#888;font-size:14px;text-align:center;padding:20px 0'>Nessuna valutazione ancora.</p>";
+    return;
+  }
+  stats.style.display = "flex";
+  const voti = votiLocali.map(v => v.voto);
+  const media = voti.reduce((s,v)=>s+v,0)/voti.length;
+  document.getElementById("statN").textContent = votiLocali.length;
+  document.getElementById("statMedia").textContent = media.toFixed(1);
+  document.getElementById("statMax").textContent = Math.max(...voti);
+  document.getElementById("statMin").textContent = Math.min(...voti);
+  let html = "<table class='voti-table'><thead><tr><th>Ora</th><th>Nome</th><th>Classe</th><th>Voto</th><th>Giudizio</th></tr></thead><tbody>";
+  votiLocali.forEach(v => {
+    const cls = v.voto>=7?"badge-high":v.voto>=5?"badge-mid":"badge-low";
+    html += "<tr><td>"+v.ora+"</td><td>"+v.nome+"</td><td>"+v.classe+"</td><td><span class='badge "+cls+"'>"+v.voto+"/10</span></td><td>"+v.giudizio+"</td></tr>";
+  });
+  html += "</tbody></table>";
+  c.innerHTML = html;
+}
+
+function exportPDF() {
+  if (votiLocali.length === 0) { alert("Nessuna valutazione da esportare."); return; }
+  const voti = votiLocali.map(v=>v.voto);
+  const media = (voti.reduce((s,v)=>s+v,0)/voti.length).toFixed(1);
+  const data = new Date().toLocaleDateString("it-IT");
+  let html = "<!DOCTYPE html><html><head><meta charset='UTF-8'><style>body{font-family:Arial;padding:30px;color:#222}h1{color:#2f6b2f;font-size:20px;margin-bottom:4px}.sub{color:#666;font-size:13px;margin-bottom:20px}table{width:100%;border-collapse:collapse;margin-bottom:20px}th{background:#2f6b2f;color:white;padding:9px 10px;text-align:left;font-size:13px}td{padding:9px 10px;border-bottom:1px solid #ddd;font-size:13px}.media{background:#eef3ea;padding:10px 16px;border-radius:8px;font-size:14px;margin-bottom:24px;display:inline-block}h2{color:#2f6b2f;font-size:15px;margin:20px 0 10px}.detail{background:#f8f8f8;padding:12px;border-radius:8px;margin-bottom:10px;font-size:13px;border-left:4px solid #2f6b2f}</style></head><body>";
+  html += "<h1>" + PDF_TITLE + "</h1><div class='sub'>" + PDF_SUB + " | Data: " + data + "</div>";
+  html += "<div class='media'>Media classe: <strong>" + media + "/10</strong> | Studenti: <strong>" + votiLocali.length + "</strong></div>";
+  html += "<table><thead><tr><th>Nome</th><th>Classe</th><th>Voto</th><th>Giudizio</th></tr></thead><tbody>";
+  votiLocali.forEach(v => { html += "<tr><td>"+v.nome+"</td><td>"+v.classe+"</td><td><strong>"+v.voto+"/10</strong></td><td>"+v.giudizio+"</td></tr>"; });
+  html += "</tbody></table><h2>Dettaglio per studente</h2>";
+  votiLocali.forEach(v => { html += "<div class='detail'><strong>"+v.nome+" ("+v.classe+") - Voto: "+v.voto+"/10</strong><br>Giudizio: "+v.giudizio+"<br>Punti di forza: "+v.punti_forza+"<br>Da migliorare: "+v.da_migliorare+"</div>"; });
+  html += "</body></html>";
+  const w = window.open("","_blank");
+  w.document.write(html);
+  w.document.close();
+  setTimeout(()=>w.print(),500);
+}
+
+document.getElementById("userInput").addEventListener("keydown", function(e) {
+  if (e.key==="Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
 });
-
-addMessage(text,"bot");
-}
-
-async function startChat(){
-
-const nome=document.getElementById("nome").value.trim();
-const classe=document.getElementById("classe").value.trim();
-
-if(!nome || !classe){
-alert("Inserisci nome e classe");
-return;
-}
-
-document.getElementById("setup").classList.add("hidden");
-
-document.getElementById("chatSection").classList.remove("hidden");
-
-document.getElementById("studentTitle").innerText=
-nome+" - "+classe;
-
-messages=[
-{
-role:"system",
-content:systemPrompt
-},
-{
-role:"user",
-content:"Inizia il colloquio orale."
-}
-];
-
-await askAI();
-}
-
-async function sendMessage(){
-
-const input=document.getElementById("userInput");
-
-const text=input.value.trim();
-
-if(!text)return;
-
-addMessage(text,"user");
-
-messages.push({
-role:"user",
-content:text
-});
-
-input.value="";
-
-await askAI();
-}
-
-async function finishTest(){
-
-document.getElementById("chatSection").classList.add("hidden");
-
-document.getElementById("resultSection").classList.remove("hidden");
-
-document.getElementById("result").innerHTML=
-"Generazione valutazione...";
-
-const transcript=messages.map(m=>
-m.role.toUpperCase()+": "+m.content
-).join("\n\n");
-
-const prompt=`
-Valuta questo colloquio orale.
-
-Dai:
-- voto da 1 a 10
-- giudizio
-- punti di forza
-- cosa migliorare
-
-Colloquio:
-
-${transcript}
-`;
-
-const response=await fetch(
-"https://api.groq.com/openai/v1/chat/completions",
-{
-method:"POST",
-headers:{
-"Content-Type":"application/json",
-"Authorization":"Bearer "+API_KEY
-},
-body:JSON.stringify({
-model:MODEL,
-messages:[
-{
-role:"user",
-content:prompt
-}
-]
-})
-}
-);
-
-const data=await response.json();
-
-const result=data.choices[0].message.content;
-
-document.getElementById("result").innerHTML=
-result.replace(/\n/g,"<br>");
-}
-
 </script>
-
 </body>
 </html>
