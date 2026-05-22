@@ -157,7 +157,7 @@ async function callAPI(msgs, system, retry=0) {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
-      model: "mistralai/mistral-small",
+      model: "mistralai/mistral-small-2603",
       max_tokens: 500,
       messages: msgsTroncati
     })
