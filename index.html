@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Verifica Scienze degli Alimenti — Classe Quinta</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -157,7 +157,7 @@ async function callAPI(msgs, system, retry=0) {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
-      model: "meta-llama/llama-3.1-8b-instruct:free",
+      model: "openrouter/free",
       max_tokens: 500,
       messages: msgsTroncati
     })
@@ -247,7 +247,11 @@ async function finishTest() {
     const val = JSON.parse(match[0]);
     if (!val.voto || !val.giudizio) throw new Error("Campi JSON mancanti");
     document.getElementById("result").textContent = "Voto: " + val.voto + "/10\n\nGiudizio: " + val.giudizio + "\n\nPunti di forza: " + (val.punti_forza||"-") + "\n\nDa migliorare: " + (val.da_migliorare||"-");
-    const entry = {nome, classe, voto: val.voto, giudizio: val.giudizio, punti_forza: val.punti_forza||"-", da_migliorare: val.da_migliorare||"-", ora: new Date().toLocaleTimeString("it-IT")};
+    const trascritto = messages
+      .filter(m => m.role !== 'system')
+      .map(m => (m.role === 'user' ? 'STUDENTE: ' : 'PROFESSORE: ') + m.content)
+      .join(' || ');
+    const entry = {nome, classe, voto: val.voto, giudizio: val.giudizio, punti_forza: val.punti_forza||"-", da_migliorare: val.da_migliorare||"-", trascritto, ora: new Date().toLocaleTimeString("it-IT")};
     votiLocali.push(entry);
     const status = document.getElementById("saveStatus");
     try {
