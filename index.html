@@ -157,7 +157,7 @@ async function callAPI(msgs, system, retry=0) {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
-      model: "llama-3.1-8b-instant",
+      model: "meta-llama/llama-3.1-8b-instruct:free",
       max_tokens: 500,
       messages: msgsTroncati
     })
@@ -321,9 +321,7 @@ function exportPDF() {
   setTimeout(()=>w.print(),500);
 }
 
-document.getElementById("userInput").addEventListener("keydown", function(e) {
-  if (e.key==="Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-});
+// Invio solo con il bottone - Enter va a capo normalmente
 </script>
 </body>
 </html>
